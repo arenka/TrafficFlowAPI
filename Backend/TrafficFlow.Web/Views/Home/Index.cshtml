@@ -1,0 +1,303 @@
+﻿@{
+    ViewData["Title"] = "METR-LA Akıllı Şehir Karar Destek Sistemi";
+    var apiBaseUrl = ViewBag.ApiBaseUrl as string ?? "http://localhost:5100";
+}
+
+<div class="app-shell" data-api-base="@apiBaseUrl">
+    <!-- Top Header -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-badge">AI</div>
+            <div>
+                <h1>Dinamik Trafik Akışı Tahmini &amp; Karar Destek Sistemi</h1>
+                <p class="subtitle">METR-LA (207 Sensör) · PyTorch Derin Öğrenme · ASP.NET Core 9 Mikroservis Mimarisi</p>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div id="systemStatus" class="status-pill status-loading">Bağlanıyor...</div>
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="mapTab">Canlı Harita &amp; Tahmin</button>
+                <button class="tab-btn" data-tab="academicTab">Akademik Karşılaştırma</button>
+                <button class="tab-btn" data-tab="plotsTab">Tez Grafikleri (300 DPI)</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- TAB 1: LIVE MAP & DECISION SUPPORT -->
+    <main id="mapTab" class="tab-panel active">
+        <!-- Control Bar -->
+        <section class="control-bar card">
+            <div class="control-group">
+                <label for="modelSelect">Derin Öğrenme Modeli</label>
+                <select id="modelSelect" class="select-input">
+                    <option value="gru" selected>GRU (En İyi Model — Uzamsal+Zamansal)</option>
+                    <option value="lstm">LSTM (2 Katman, Uzamsal+Zamansal)</option>
+                    <option value="bilstm_attention">BiLSTM + Temporal Attention</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Harita Tahmin Ufku</label>
+                <div class="segmented" id="horizonButtons">
+                    <button class="seg-btn" data-horizon="current">Şimdi</button>
+                    <button class="seg-btn active" data-horizon="15">+15 dk</button>
+                    <button class="seg-btn" data-horizon="30">+30 dk</button>
+                    <button class="seg-btn" data-horizon="60">+60 dk</button>
+                </div>
+            </div>
+
+            <div class="control-group slider-group">
+                <div class="slider-header">
+                    <label for="timeSlider">Test Seti Zaman Dilimi</label>
+                    <span id="timestampLabel" class="timestamp-badge">—</span>
+                </div>
+                <input type="range" id="timeSlider" min="27417" max="34250" step="6" value="27897" />
+            </div>
+
+            <div class="control-group">
+                <label>Hızlı Senaryo</label>
+                <div class="quick-btns">
+                    <button class="chip-btn" data-offset="108">Sabah Zirve</button>
+                    <button class="chip-btn" data-offset="168">Öğle Akışı</button>
+                    <button class="chip-btn" data-offset="216">Akşam Zirve</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Summary Row -->
+        <section class="kpi-grid">
+            <div class="card kpi-card">
+                <span class="kpi-label">Ağ Ort. Hızı (Şimdi)</span>
+                <strong id="kpiCurrent" class="kpi-value">—</strong>
+                <span class="kpi-sub">207 Los Angeles Otoyol Sensörü</span>
+            </div>
+            <div class="card kpi-card">
+                <span class="kpi-label">Tahmin Ort. (+15 / +30 / +60 dk)</span>
+                <strong id="kpiPreds" class="kpi-value kpi-sm">—</strong>
+                <span class="kpi-sub">Çoklu Ufuk (Multi-Horizon) Öngörü</span>
+            </div>
+            <div class="card kpi-card kpi-danger">
+                <span class="kpi-label">Kritik Tıkanıklık (&lt;25 mph)</span>
+                <strong id="kpiSevere" class="kpi-value">—</strong>
+                <span class="kpi-sub">+15 dk Acil Müdahale Bölgesi</span>
+            </div>
+            <div class="card kpi-card kpi-warn">
+                <span class="kpi-label">Orta Yoğunluk (25–45 mph)</span>
+                <strong id="kpiModerate" class="kpi-value">—</strong>
+                <span class="kpi-sub">Akıcı Sensör: <b id="kpiFreeFlow">—</b></span>
+            </div>
+            <div class="card kpi-card kpi-weather">
+                <span class="kpi-label">LA Gerçek Hava Durumu</span>
+                <strong id="kpiWeather" class="kpi-value kpi-sm">—</strong>
+                <span id="kpiWeatherSub" class="kpi-sub">Open-Meteo 2012 Arşivi</span>
+            </div>
+        </section>
+
+        <!-- Map + Right Panel -->
+        <section class="workspace-grid">
+            <div class="card map-card">
+                <div class="card-header">
+                    <h2>Los Angeles Yol Ağı — Dinamik Yoğunluk Haritası</h2>
+                    <div class="legend">
+                        <span><i class="dot dot-free"></i>Akıcı (&ge;45 mph)</span>
+                        <span><i class="dot dot-mod"></i>Orta (25–45)</span>
+                        <span><i class="dot dot-sev"></i>Kritik (&lt;25)</span>
+                    </div>
+                </div>
+                <div id="trafficMap" class="map-container"></div>
+            </div>
+
+            <div class="side-stack">
+                <!-- Sensor Detail Chart -->
+                <div class="card detail-card">
+                    <div class="card-header">
+                        <h2 id="sensorTitle">Sensör Detay &amp; Çoklu Model Tahmini</h2>
+                        <span id="sensorNeighborBadge" class="badge-muted">Haritadan sensör seçin</span>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="sensorForecastChart"></canvas>
+                    </div>
+                    <div id="sensorComparisonRow" class="mini-metrics"></div>
+                </div>
+
+                <!-- Decision Support Alerts -->
+                <div class="card alerts-card">
+                    <div class="card-header">
+                        <h2>Karar Destek — Kritik Tıkanıklık Uyarıları</h2>
+                        <span class="badge-danger">Öncelikli Koridorlar</span>
+                    </div>
+                    <div id="alertsList" class="alerts-list">
+                        <p class="empty-msg">Veriler yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Custom Real-Time Sensor Inference Simulator (POST /api/traffic/predict/custom) -->
+        <section class="card custom-sim-card">
+            <div class="card-header">
+                <div>
+                    <h2>Canlı Özel Sensör Tahmin Simülatörü (REST POST API)</h2>
+                    <span class="subtitle">Dışarıdan gelen son 60 dakikalık (12 × 5 dk) hız verisini girerek eğitilmiş PyTorch modellerinden anlık +15/+30/+60 dk tahmini alın</span>
+                </div>
+                <a href="@apiBaseUrl/swagger" target="_blank" rel="noopener" class="chip-btn swagger-link">Swagger UI Aç (:5100/swagger)</a>
+            </div>
+            <div class="custom-sim-grid">
+                <div class="control-group">
+                    <label for="customSpeedsInput">Son 12 Adım Hız Verisi (mph, virgülle ayrılmış)</label>
+                    <input id="customSpeedsInput" class="select-input" type="text" value="62, 60, 57, 53, 48, 44, 39, 35, 31, 28, 26, 24" />
+                </div>
+                <div class="control-group">
+                    <label for="customHourInput">Saat (0–23)</label>
+                    <input id="customHourInput" class="select-input" type="number" min="0" max="23" value="8" />
+                </div>
+                <div class="control-group">
+                    <label for="customDaySelect">Gün</label>
+                    <select id="customDaySelect" class="select-input">
+                        <option value="0">Pazartesi</option>
+                        <option value="1">Salı</option>
+                        <option value="2" selected>Çarşamba</option>
+                        <option value="3">Perşembe</option>
+                        <option value="4">Cuma</option>
+                        <option value="5">Cumartesi</option>
+                        <option value="6">Pazar</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button id="runCustomPredictBtn" class="primary-btn">Canlı Tahmin Üret</button>
+                </div>
+            </div>
+            <div id="customPredictOutput" class="custom-output"></div>
+        </section>
+    </main>
+
+    <!-- TAB 2: ACADEMIC COMPARISON -->
+    <main id="academicTab" class="tab-panel">
+        <section class="academic-header card">
+            <div>
+                <h2>Akademik Model Karşılaştırması &amp; Hiperparametre Ablasyon Analizi</h2>
+                <p id="datasetMetaText" class="subtitle">METR-LA kronolojik test seti (Son %20) üzerinde Masked MAE, RMSE, MAPE ve R² sonuçları.</p>
+            </div>
+            <div id="bestModelBadge" class="best-badge">En İyi Model: —</div>
+        </section>
+
+        <section class="academic-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tahmin Ufkuna Göre MAE Karşılaştırması (15 / 30 / 60 dk)</h2>
+                </div>
+                <div class="chart-box-lg">
+                    <canvas id="academicMaeChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>Eğitim &amp; Doğrulama Kayıp Eğrileri (Validation MAE)</h2>
+                </div>
+                <div class="chart-box-lg">
+                    <canvas id="trainingLossChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="card table-card">
+            <div class="card-header">
+                <h2>Model Performans Tablosu (Baseline vs. Derin Öğrenme)</h2>
+            </div>
+            <div class="table-wrap">
+                <table id="modelComparisonTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Parametre</th>
+                            <th>15 dk MAE / RMSE</th>
+                            <th>30 dk MAE / RMSE</th>
+                            <th>60 dk MAE / RMSE</th>
+                            <th>Genel MAE</th>
+                            <th>Genel RMSE</th>
+                            <th>MAPE (%)</th>
+                            <th>R²</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card table-card">
+            <div class="card-header">
+                <h2>Hiperparametre &amp; Uzamsal Özellik (Spatial Neighbor) Ablasyon Çalışması</h2>
+            </div>
+            <div class="table-wrap">
+                <table id="ablationTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Deney Konfigürasyonu</th>
+                            <th>Katman</th>
+                            <th>Hidden Size</th>
+                            <th>Uzamsal Komşuluk</th>
+                            <th>Parametre</th>
+                            <th>Genel MAE</th>
+                            <th>Genel RMSE</th>
+                            <th>MAPE (%)</th>
+                            <th>R²</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Dynamic Interactive Confusion Matrix -->
+        <section class="card table-card">
+            <div class="card-header">
+                <div>
+                    <h2>Dinamik Tıkanıklık Sınıflandırma Matrisi (Confusion Matrix)</h2>
+                    <span class="subtitle">Model ve tahmin ufku seçtikçe 3×3 Karar Destek sınıflandırma doğrulaması canlı güncellenir</span>
+                </div>
+                <div class="cm-controls">
+                    <select id="cmModelSelect" class="select-input">
+                        <option value="GRU" selected>GRU (En İyi Model)</option>
+                        <option value="LSTM">LSTM</option>
+                        <option value="BiLSTM-Attention">BiLSTM-Attention</option>
+                    </select>
+                    <select id="cmHorizonSelect" class="select-input">
+                        <option value="15 Dakika">15 Dakika</option>
+                        <option value="30 Dakika">30 Dakika</option>
+                        <option value="60 Dakika">60 Dakika</option>
+                    </select>
+                </div>
+            </div>
+            <div id="cmKpiRow" class="cm-kpi-row"></div>
+            <div class="table-wrap">
+                <table id="dynamicCmTable" class="cm-table">
+                    <thead>
+                        <tr>
+                            <th>Gerçek \ Tahmin</th>
+                            <th>Kritik (&lt;25 mph)</th>
+                            <th>Orta (25–45 mph)</th>
+                            <th>Akıcı (&ge;45 mph)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- TAB 3: THESIS PLOTS GALLERY -->
+    <main id="plotsTab" class="tab-panel">
+        <section class="card">
+            <div class="card-header">
+                <h2>Tez ve Sunum İçin Üretilen Yüksek Çözünürlüklü Grafikler (300 DPI)</h2>
+                <span class="subtitle">AI_Models/plots klasöründen canlı sunulur</span>
+            </div>
+            <div id="plotsGallery" class="plots-grid"></div>
+        </section>
+    </main>
+</div>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}

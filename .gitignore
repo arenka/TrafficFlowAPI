@@ -1,0 +1,16 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# .NET
+bin/
+obj/
+.vs/
+*.user
+
+# Large raw dataset files (download via METR-LA benchmark links)
+AI_Models/data/metr-la.h5
+AI_Models/data/metr-la-real.h5

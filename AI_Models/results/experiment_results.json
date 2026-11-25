@@ -1,0 +1,847 @@
+{
+  "generated_at": "2026-11-25T19:35:25.170519+00:00",
+  "dataset": {
+    "name": "METR-LA (Los Angeles Highway Loop Detectors)",
+    "num_sensors": 207,
+    "num_timesteps": 34272,
+    "interval_minutes": 5,
+    "date_start": "2012-03-01 00:00:00",
+    "date_end": "2012-06-27 23:55:00",
+    "missing_zero_pct": 8.11,
+    "train_mean_mph": 58.5843,
+    "train_std_mph": 12.8229,
+    "split": {
+      "train": 0.7,
+      "val": 0.1,
+      "test": 0.2
+    }
+  },
+  "best_model": "GRU",
+  "models": {
+    "Persistence": {
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.4904,
+            "rmse": 6.3848,
+            "mape": 8.3288,
+            "r2": 0.7758
+          },
+          "30 min": {
+            "mae": 4.2007,
+            "rmse": 8.0885,
+            "mape": 10.6791,
+            "r2": 0.6454
+          },
+          "60 min": {
+            "mae": 5.3802,
+            "rmse": 10.3881,
+            "mape": 14.5359,
+            "r2": 0.4342
+          }
+        },
+        "overall": {
+          "mae": 4.3571,
+          "rmse": 8.2871,
+          "mape": 11.1813,
+          "r2": 0.6185
+        }
+      },
+      "num_params": 0,
+      "train_time_sec": 0.0,
+      "history": null
+    },
+    "Historical Avg": {
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 4.2089,
+            "rmse": 7.8519,
+            "mape": 12.985,
+            "r2": 0.6609
+          },
+          "30 min": {
+            "mae": 4.1929,
+            "rmse": 7.8644,
+            "mape": 13.0225,
+            "r2": 0.6648
+          },
+          "60 min": {
+            "mae": 4.2033,
+            "rmse": 7.9011,
+            "mape": 13.1393,
+            "r2": 0.6727
+          }
+        },
+        "overall": {
+          "mae": 4.2017,
+          "rmse": 7.8725,
+          "mape": 13.0489,
+          "r2": 0.6661
+        }
+      },
+      "num_params": 0,
+      "train_time_sec": 0.0,
+      "history": null
+    },
+    "LSTM": {
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.1334,
+            "rmse": 5.8457,
+            "mape": 8.4132,
+            "r2": 0.8121
+          },
+          "30 min": {
+            "mae": 3.7587,
+            "rmse": 7.2818,
+            "mape": 10.6997,
+            "r2": 0.7126
+          },
+          "60 min": {
+            "mae": 4.7744,
+            "rmse": 9.3543,
+            "mape": 15.1974,
+            "r2": 0.5412
+          }
+        },
+        "overall": {
+          "mae": 3.8888,
+          "rmse": 7.4939,
+          "mape": 11.4368,
+          "r2": 0.6886
+        }
+      },
+      "num_params": 54019,
+      "train_time_sec": 259.72,
+      "history": {
+        "train_loss": [
+          4.4736,
+          4.0257,
+          3.9087,
+          3.8317,
+          3.7939,
+          3.7669,
+          3.7329,
+          3.7177
+        ],
+        "val_loss": [
+          3.6156,
+          3.5691,
+          3.5553,
+          3.5625,
+          3.4072,
+          3.4232,
+          3.5136,
+          3.4689
+        ]
+      }
+    },
+    "GRU": {
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.0875,
+            "rmse": 5.8306,
+            "mape": 8.3469,
+            "r2": 0.813
+          },
+          "30 min": {
+            "mae": 3.6634,
+            "rmse": 7.1843,
+            "mape": 10.5452,
+            "r2": 0.7203
+          },
+          "60 min": {
+            "mae": 4.6053,
+            "rmse": 9.0465,
+            "mape": 14.5159,
+            "r2": 0.5709
+          }
+        },
+        "overall": {
+          "mae": 3.7854,
+          "rmse": 7.3538,
+          "mape": 11.136,
+          "r2": 0.7014
+        }
+      },
+      "num_params": 41091,
+      "train_time_sec": 289.05,
+      "history": {
+        "train_loss": [
+          4.3858,
+          3.9956,
+          3.8787,
+          3.8182,
+          3.7704,
+          3.7376,
+          3.7158,
+          3.7063
+        ],
+        "val_loss": [
+          3.5453,
+          3.5249,
+          3.575,
+          3.4264,
+          3.4346,
+          3.4239,
+          3.4166,
+          3.3849
+        ]
+      }
+    },
+    "BiLSTM-Attention": {
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.1445,
+            "rmse": 5.9871,
+            "mape": 8.6394,
+            "r2": 0.8029
+          },
+          "30 min": {
+            "mae": 3.7431,
+            "rmse": 7.4018,
+            "mape": 10.8248,
+            "r2": 0.7031
+          },
+          "60 min": {
+            "mae": 4.7959,
+            "rmse": 9.6042,
+            "mape": 15.4952,
+            "r2": 0.5164
+          }
+        },
+        "overall": {
+          "mae": 3.8945,
+          "rmse": 7.6644,
+          "mape": 11.6531,
+          "r2": 0.6741
+        }
+      },
+      "num_params": 153220,
+      "train_time_sec": 516.92,
+      "history": {
+        "train_loss": [
+          4.3209,
+          3.8973,
+          3.7865,
+          3.7393,
+          3.7044,
+          3.6665,
+          3.6493,
+          3.6336
+        ],
+        "val_loss": [
+          3.6042,
+          3.5634,
+          3.4962,
+          3.548,
+          3.4909,
+          3.5899,
+          3.5418,
+          3.5327
+        ]
+      }
+    }
+  },
+  "ablation_study": [
+    {
+      "experiment": "LSTM (1 Katman, h=32)",
+      "num_layers": 1,
+      "hidden_size": 32,
+      "use_spatial": true,
+      "num_params": 5763,
+      "train_time_sec": 42.72,
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.1592,
+            "rmse": 5.852,
+            "mape": 8.4523,
+            "r2": 0.8117
+          },
+          "30 min": {
+            "mae": 3.7969,
+            "rmse": 7.3121,
+            "mape": 10.9197,
+            "r2": 0.7102
+          },
+          "60 min": {
+            "mae": 4.8442,
+            "rmse": 9.4278,
+            "mape": 15.5674,
+            "r2": 0.534
+          }
+        },
+        "overall": {
+          "mae": 3.9334,
+          "rmse": 7.5306,
+          "mape": 11.6465,
+          "r2": 0.6853
+        }
+      }
+    },
+    {
+      "experiment": "LSTM (2 Katman, h=64, Uzamsal Yok)",
+      "num_layers": 2,
+      "hidden_size": 64,
+      "use_spatial": false,
+      "num_params": 53763,
+      "train_time_sec": 149.2,
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.2417,
+            "rmse": 5.9202,
+            "mape": 8.7921,
+            "r2": 0.8072
+          },
+          "30 min": {
+            "mae": 3.8497,
+            "rmse": 7.3922,
+            "mape": 11.1383,
+            "r2": 0.7038
+          },
+          "60 min": {
+            "mae": 4.9255,
+            "rmse": 9.53,
+            "mape": 15.9063,
+            "r2": 0.5238
+          }
+        },
+        "overall": {
+          "mae": 4.0056,
+          "rmse": 7.6141,
+          "mape": 11.9456,
+          "r2": 0.6783
+        }
+      }
+    },
+    {
+      "experiment": "LSTM (2 Katman, h=64, Uzamsal Var)",
+      "num_layers": 2,
+      "hidden_size": 64,
+      "use_spatial": true,
+      "num_params": 54019,
+      "train_time_sec": 259.72,
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.1334,
+            "rmse": 5.8457,
+            "mape": 8.4132,
+            "r2": 0.8121
+          },
+          "30 min": {
+            "mae": 3.7587,
+            "rmse": 7.2818,
+            "mape": 10.6997,
+            "r2": 0.7126
+          },
+          "60 min": {
+            "mae": 4.7744,
+            "rmse": 9.3543,
+            "mape": 15.1974,
+            "r2": 0.5412
+          }
+        },
+        "overall": {
+          "mae": 3.8888,
+          "rmse": 7.4939,
+          "mape": 11.4368,
+          "r2": 0.6886
+        }
+      }
+    },
+    {
+      "experiment": "LSTM (3 Katman, h=96, Uzamsal Var)",
+      "num_layers": 3,
+      "hidden_size": 96,
+      "use_spatial": true,
+      "num_params": 193923,
+      "train_time_sec": 389.01,
+      "metrics": {
+        "horizons": {
+          "15 min": {
+            "mae": 3.1015,
+            "rmse": 5.8017,
+            "mape": 8.3593,
+            "r2": 0.8149
+          },
+          "30 min": {
+            "mae": 3.6808,
+            "rmse": 7.1779,
+            "mape": 10.4529,
+            "r2": 0.7208
+          },
+          "60 min": {
+            "mae": 4.6066,
+            "rmse": 9.0531,
+            "mape": 14.2306,
+            "r2": 0.5703
+          }
+        },
+        "overall": {
+          "mae": 3.7963,
+          "rmse": 7.3442,
+          "mape": 11.0143,
+          "r2": 0.702
+        }
+      }
+    }
+  ],
+  "confusion_matrices": {
+    "LSTM": {
+      "15 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            3329,
+            1816,
+            382
+          ],
+          [
+            683,
+            6373,
+            2319
+          ],
+          [
+            182,
+            1802,
+            87515
+          ]
+        ],
+        "matrix_pct": [
+          [
+            60.23,
+            32.86,
+            6.91
+          ],
+          [
+            7.29,
+            67.98,
+            24.74
+          ],
+          [
+            0.2,
+            2.01,
+            97.78
+          ]
+        ],
+        "accuracy_pct": 93.12,
+        "macro_f1": 0.7723,
+        "weighted_f1": 0.9303,
+        "severe_recall": 0.6023,
+        "severe_precision": 0.7938
+      },
+      "30 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            3007,
+            1798,
+            766
+          ],
+          [
+            872,
+            5293,
+            2974
+          ],
+          [
+            325,
+            2073,
+            85569
+          ]
+        ],
+        "matrix_pct": [
+          [
+            53.98,
+            32.27,
+            13.75
+          ],
+          [
+            9.54,
+            57.92,
+            32.54
+          ],
+          [
+            0.37,
+            2.36,
+            97.27
+          ]
+        ],
+        "accuracy_pct": 91.42,
+        "macro_f1": 0.7197,
+        "weighted_f1": 0.9119,
+        "severe_recall": 0.5398,
+        "severe_precision": 0.7153
+      },
+      "60 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            2130,
+            1870,
+            1958
+          ],
+          [
+            627,
+            4204,
+            4474
+          ],
+          [
+            364,
+            1798,
+            86383
+          ]
+        ],
+        "matrix_pct": [
+          [
+            35.75,
+            31.39,
+            32.86
+          ],
+          [
+            6.74,
+            45.18,
+            48.08
+          ],
+          [
+            0.41,
+            2.03,
+            97.56
+          ]
+        ],
+        "accuracy_pct": 89.32,
+        "macro_f1": 0.6371,
+        "weighted_f1": 0.8834,
+        "severe_recall": 0.3575,
+        "severe_precision": 0.6825
+      }
+    },
+    "GRU": {
+      "15 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            3150,
+            1999,
+            378
+          ],
+          [
+            566,
+            6448,
+            2361
+          ],
+          [
+            164,
+            1734,
+            87601
+          ]
+        ],
+        "matrix_pct": [
+          [
+            56.99,
+            36.17,
+            6.84
+          ],
+          [
+            6.04,
+            68.78,
+            25.18
+          ],
+          [
+            0.18,
+            1.94,
+            97.88
+          ]
+        ],
+        "accuracy_pct": 93.1,
+        "macro_f1": 0.7678,
+        "weighted_f1": 0.9298,
+        "severe_recall": 0.5699,
+        "severe_precision": 0.8119
+      },
+      "30 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            2692,
+            2097,
+            782
+          ],
+          [
+            551,
+            5664,
+            2924
+          ],
+          [
+            266,
+            1985,
+            85716
+          ]
+        ],
+        "matrix_pct": [
+          [
+            48.32,
+            37.64,
+            14.04
+          ],
+          [
+            6.03,
+            61.98,
+            31.99
+          ],
+          [
+            0.3,
+            2.26,
+            97.44
+          ]
+        ],
+        "accuracy_pct": 91.62,
+        "macro_f1": 0.7197,
+        "weighted_f1": 0.9135,
+        "severe_recall": 0.4832,
+        "severe_precision": 0.7672
+      },
+      "60 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            1869,
+            2392,
+            1697
+          ],
+          [
+            384,
+            4875,
+            4046
+          ],
+          [
+            251,
+            2139,
+            86155
+          ]
+        ],
+        "matrix_pct": [
+          [
+            31.37,
+            40.15,
+            28.48
+          ],
+          [
+            4.13,
+            52.39,
+            43.48
+          ],
+          [
+            0.28,
+            2.42,
+            97.3
+          ]
+        ],
+        "accuracy_pct": 89.49,
+        "macro_f1": 0.6393,
+        "weighted_f1": 0.8866,
+        "severe_recall": 0.3137,
+        "severe_precision": 0.7464
+      }
+    },
+    "BiLSTM-Attention": {
+      "15 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            3199,
+            1910,
+            418
+          ],
+          [
+            622,
+            6205,
+            2548
+          ],
+          [
+            175,
+            1590,
+            87734
+          ]
+        ],
+        "matrix_pct": [
+          [
+            57.88,
+            34.56,
+            7.56
+          ],
+          [
+            6.63,
+            66.19,
+            27.18
+          ],
+          [
+            0.2,
+            1.78,
+            98.03
+          ]
+        ],
+        "accuracy_pct": 93.04,
+        "macro_f1": 0.7653,
+        "weighted_f1": 0.9287,
+        "severe_recall": 0.5788,
+        "severe_precision": 0.8006
+      },
+      "30 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            2833,
+            1936,
+            802
+          ],
+          [
+            759,
+            5334,
+            3046
+          ],
+          [
+            321,
+            1977,
+            85669
+          ]
+        ],
+        "matrix_pct": [
+          [
+            50.85,
+            34.75,
+            14.4
+          ],
+          [
+            8.31,
+            58.37,
+            33.33
+          ],
+          [
+            0.36,
+            2.25,
+            97.39
+          ]
+        ],
+        "accuracy_pct": 91.39,
+        "macro_f1": 0.7143,
+        "weighted_f1": 0.9111,
+        "severe_recall": 0.5085,
+        "severe_precision": 0.724
+      },
+      "60 Dakika": {
+        "labels": [
+          "Kritik (<25)",
+          "Orta (25-45)",
+          "Akıcı (>=45)"
+        ],
+        "matrix": [
+          [
+            2103,
+            1773,
+            2082
+          ],
+          [
+            540,
+            4311,
+            4454
+          ],
+          [
+            331,
+            1765,
+            86449
+          ]
+        ],
+        "matrix_pct": [
+          [
+            35.3,
+            29.76,
+            34.94
+          ],
+          [
+            5.8,
+            46.33,
+            47.87
+          ],
+          [
+            0.37,
+            1.99,
+            97.63
+          ]
+        ],
+        "accuracy_pct": 89.46,
+        "macro_f1": 0.642,
+        "weighted_f1": 0.8845,
+        "severe_recall": 0.353,
+        "severe_precision": 0.7071
+      }
+    }
+  },
+  "weather_impact": [
+    {
+      "Weather Condition": "Kuru / Yağışsız (0 mm)",
+      "5-Min Intervals": 33000,
+      "Avg Speed (mph)": 58.46,
+      "Rush-Hour Avg Speed (mph)": 53.31,
+      "Severe Congestion (%)": 4.36,
+      "Avg Temp (C)": 17.4,
+      "Avg Wind (km/h)": 7.0
+    },
+    {
+      "Weather Condition": "Hafif Yağmur (0–1 mm/sa)",
+      "5-Min Intervals": 924,
+      "Avg Speed (mph)": 58.65,
+      "Rush-Hour Avg Speed (mph)": 53.59,
+      "Severe Congestion (%)": 3.96,
+      "Avg Temp (C)": 12.0,
+      "Avg Wind (km/h)": 10.6
+    },
+    {
+      "Weather Condition": "Orta/Şiddetli Yağmur (>1 mm/sa)",
+      "5-Min Intervals": 348,
+      "Avg Speed (mph)": 55.81,
+      "Rush-Hour Avg Speed (mph)": 56.43,
+      "Severe Congestion (%)": 4.09,
+      "Avg Temp (C)": 11.4,
+      "Avg Wind (km/h)": 18.2
+    }
+  ]
+}

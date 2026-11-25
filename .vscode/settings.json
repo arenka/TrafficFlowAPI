@@ -1,0 +1,7 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/AI_Models/venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/AI_Models/src"
+  ],
+  "dotnet.defaultSolution": "Backend/TrafficFlow.sln"
+}

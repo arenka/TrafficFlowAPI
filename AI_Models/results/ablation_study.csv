@@ -1,0 +1,5 @@
+Experiment,Layers,Hidden Size,Spatial Neighbor,Params,Overall MAE,Overall RMSE,Overall MAPE (%),Overall R2
+"LSTM (1 Katman, h=32)",1,32,True,5763,3.9334,7.5306,11.6465,0.6853
+"LSTM (2 Katman, h=64, Uzamsal Yok)",2,64,False,53763,4.0056,7.6141,11.9456,0.6783
+"LSTM (2 Katman, h=64, Uzamsal Var)",2,64,True,54019,3.8888,7.4939,11.4368,0.6886
+"LSTM (3 Katman, h=96, Uzamsal Var)",3,96,True,193923,3.7963,7.3442,11.0143,0.702
